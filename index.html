@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCHIVE-09</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 520px;
+            text-align: center;
+        }
+
+        .header {
+            font-size: 16px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            background: #000000;
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 16px;
+            padding: 12px;
+            flex-grow: 1;
+            outline: none;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        button {
+            background: #ffffff;
+            color: #000000;
+            border: 1px solid #ffffff;
+            font-family: inherit;
+            font-weight: bold;
+            font-size: 16px;
+            padding: 12px 24px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background: #cccccc;
+            border-color: #cccccc;
+        }
+
+        #status {
+            margin-top: 20px;
+            min-height: 20px;
+            font-size: 14px;
+            letter-spacing: 1px;
+        }
+
+        #stage-two {
+            display: none;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #333333;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .cipher-box {
+            background: #0a0a0a;
+            border: 1px solid #444444;
+            padding: 15px;
+            margin-top: 15px;
+            word-break: break-all;
+            user-select: all;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888888;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">ARCHIVE-09 // ACCESS RESTRICTED</div>
+
+        <div class="input-group">
+            <input type="text" id="keyInput" autocomplete="off">
+            <button onclick="checkKey()">ENTER</button>
+        </div>
+
+        <div id="status"></div>
+
+        
+        <div id="stage-two">
+            <div>ACCESS GRANTED. PAYLOAD INTERCEPTED:</div>
+            <div class="cipher-box">leGY/f2J4/xjmcv9jOP1k/tvYHJgFgoJBxwHC3JjmPL9h+P6k/CepeeLZZP9n57njWWT9J+Q54Y=</div>
+            <div class="meta">CIPHER: X // B</div>
+        </div>
+    </div>
+
+    <script>
+        
+        const TARGET_HASH = "ccc9983b9b919b79690b49456440816411f29fb9e872fa9009fcb5aef997ae3f";
+
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function checkKey() {
+            const input = document.getElementById('keyInput').value.trim().toUpperCase();
+            const status = document.getElementById('status');
+            const stageTwo = document.getElementById('stage-two');
+
+            if (!input) return;
+
+            const hash = await sha256(input);
+
+            if (hash === TARGET_HASH) {
+                status.innerHTML = '';
+                stageTwo.style.display = 'block';
+            } else {
+                status.innerHTML = 'ACCESS DENIED';
+                stageTwo.style.display = 'none';
+            }
+        }
+
+        document.getElementById('keyInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkKey();
+            }
+        });
+    </script>
+</body>
+</html>
